@@ -20,14 +20,102 @@ st.set_page_config(
 # --- STYLING ---
 st.markdown("""
 <style>
-.main {background-color: #0f172a;}
-.block-container {padding-top: 2rem;}
-.metric-card {
-    background: #1e293b;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
+
+/* -------- GLOBAL -------- */
+body {
+    font-family: 'Inter', sans-serif;
 }
+
+/* -------- MAIN BACKGROUND -------- */
+.main {
+    background-color: #f5f7fb;
+}
+
+/* -------- TITLE -------- */
+h1 {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* -------- METRIC CARDS -------- */
+.stMetric {
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.stMetric:hover {
+    transform: translateY(-2px);
+}
+
+/* -------- SIDEBAR -------- */
+section[data-testid="stSidebar"] {
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+}
+
+/* -------- INPUT FIELDS -------- */
+input, textarea {
+    border-radius: 8px !important;
+    border: 1px solid #d1d5db !important;
+}
+
+/* -------- SELECT BOX -------- */
+div[data-baseweb="select"] {
+    border-radius: 8px;
+}
+
+/* -------- RADIO -------- */
+div[role="radiogroup"] > label {
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+
+/* -------- BUTTON -------- */
+.stButton > button {
+    background: #2563eb;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 16px;
+    border: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.stButton > button:hover {
+    background: #1d4ed8;
+    transform: scale(1.02);
+}
+
+/* -------- DATAFRAME -------- */
+[data-testid="stDataFrame"] {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+/* -------- TABS -------- */
+button[role="tab"] {
+    font-weight: 500;
+}
+
+button[aria-selected="true"] {
+    border-bottom: 2px solid #2563eb !important;
+}
+
+/* -------- ALERT BOX -------- */
+.stAlert {
+    border-radius: 10px;
+}
+
+/* -------- DIVIDER -------- */
+hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
