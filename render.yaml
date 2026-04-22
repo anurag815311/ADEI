@@ -1,10 +1,10 @@
-services:
-  # PostgreSQL Database
-  - type: database
-    name: job-intel-db
+databases:
+  - name: job-intel-db
     databaseName: job_intelligence
     user: postgres
+    plan: free
 
+services:
   # FastAPI Backend
   - type: web
     name: job-intel-api
