@@ -1,7 +1,5 @@
 databases:
   - name: job-intel-db
-    databaseName: job_intelligence
-    user: postgres
     plan: free
 
 services:
