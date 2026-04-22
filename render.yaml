@@ -1,3 +1,7 @@
+databases:
+  - name: job-intel-db
+    plan: free
+
 services:
   # FastAPI Backend (Includes Background Pipeline)
   - type: web
@@ -8,7 +12,9 @@ services:
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        sync: false # Paste your Neon.tech connection string here manually on Render
+        fromDatabase:
+          name: job-intel-db
+          property: connectionString
       - key: API_PORT
         value: 8000
 
@@ -22,7 +28,9 @@ services:
     envVars:
       - key: API_PORT
         value: 8000
-      - key: API_URL
-        sync: false # Set this to your job-intel-api URL once deployed
       - key: DATABASE_URL
-        sync: false # Paste your Neon.tech connection string here manually on Render
+        fromDatabase:
+          name: job-intel-db
+          property: connectionString
+      - key: API_URL
+        sync: false # You will still need to paste your API URL here after deployment

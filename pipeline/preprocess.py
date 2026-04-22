@@ -12,6 +12,7 @@ class DataPipeline:
     def __init__(self):
         self.raw_path = "data/raw"
         self.processed_path = "data/processed"
+        os.makedirs(self.raw_path, exist_ok=True)
         os.makedirs(self.processed_path, exist_ok=True)
         self.extractor = SkillExtractor()
         init_db()
