@@ -1,6 +1,7 @@
 import time
 from apscheduler.schedulers.blocking import BlockingScheduler
 from scraping.job_scraper import ArbeitnowScraper, RemotiveScraper
+from scraping.html_scraper import HTMLJobScraper
 from pipeline.preprocess import DataPipeline
 from loguru import logger
 import os
@@ -18,6 +19,9 @@ def run_job_pipeline():
     
     r_scraper = RemotiveScraper()
     r_scraper.scrape()
+    
+    html_scraper = HTMLJobScraper()
+    html_scraper.scrape()
     
     # 2. Process
     logger.info("Step 2: Processing and Loading...")

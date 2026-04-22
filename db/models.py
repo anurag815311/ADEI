@@ -25,10 +25,11 @@ class JobListing(Base):
     job_type = Column(Text)
     url = Column(Text)
     description = Column(Text)
-    posted_at = Column(DateTime)
+    posted_at = Column(DateTime, index=True)
     category = Column(String)
     salary_min = Column(Float, nullable=True)
     salary_max = Column(Float, nullable=True)
+    skills = Column(Text) # Extracted skills as comma-separated string
 
 if DATABASE_URL.startswith("sqlite"):
     engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})

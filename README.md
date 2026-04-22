@@ -1,16 +1,17 @@
-# 🚀 Job Market Intelligence Pipeline (B2B)
+# 🚀 Tech Hiring Intelligence Pipeline (B2B)
 
-A production-grade, end-to-end data engineering project that scrapes, processes, and visualizes job market data (remote and tech jobs) to provide business intelligence.
+A production-grade **Job Market Intelligence** system for businesses. It scrapes, processes (NLP skill extraction), and visualizes tech hiring trends to provide actionable market intelligence.
 
-## 🏗️ Architecture
+## 🏗️ Architecture (Upgraded)
 
-1.  **Scraper**: Python-based scraper (Requests + Tenacity) for Arbeitnow and Remotive APIs.
-2.  **ETL Pipeline**: Data cleaning (BS4), transformation (Pandas), and normalization.
-3.  **Database**: PostgreSQL for structured storage of job listings.
-4.  **Automation**: APScheduler orchestrating daily runs (Idempotent upserts).
-5.  **Backend API**: FastAPI serving data, insights, and trend endpoints.
-6.  **Frontend**: Streamlit dashboard with interactive Plotly visualizations.
-7.  **ML Layer**: RandomForest model for job demand forecasting.
+1.  **Hybrid Scrapers**: API-based (Arbeitnow, Remotive) + **BeautifulSoup HTML Scraper**.
+2.  **Intelligence Layer**: NLP-based **Skill Extraction** from job descriptions.
+3.  **Enhanced ETL**: Incremental loading, deduplication, and PostgreSQL indexing.
+4.  **Multi-Model ML**: 
+    *   `DemandModel`: RandomForest for volume prediction.
+    *   `HiringForecast`: Linear Time-Series forecasting for market trends.
+5.  **Analytics API**: Extended FastAPI endpoints for Skill Demand and Remote Ratios.
+6.  **Business Dashboard**: Advanced Streamlit UI with Skill Heatmaps and Hiring Hotspots.
 
 ## 🛠️ Tech Stack
 

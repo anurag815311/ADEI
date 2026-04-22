@@ -1,10 +1,9 @@
 from fastapi import FastAPI, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from typing import List, Optional
 from db.models import JobListing, SessionLocal
-from pydantic import BaseModel
-from datetime import datetime
+from api.schemas import JobSchema
+from typing import List, Optional
 import uvicorn
 import os
 
@@ -17,20 +16,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-class JobSchema(BaseModel):
-    id: int
-    source: str
-    title: str
-    company: str
-    location: Optional[str]
-    remote: bool
-    tags: Optional[str]
-    posted_at: datetime
-    url: str
-
-    class Config:
-        orm_mode = True
 
 @app.get("/data", response_model=List[JobSchema])
 def get_jobs(
@@ -95,6 +80,39 @@ def get_trends(db: Session = Depends(get_db)):
         ).group_by('day').order_by('day').all()
     
     return [{"day": t[0], "count": t[1]} for t in trends]
+
+@app.get("/top-skills")
+def get_top_skills(limit: int = 15, db: Session = Depends(get_db)):
+    all_skills = db.query(JobListing.skills).all()
+    skill_counts = {}
+    for (skills_str,) in all_skills:
+        if skills_str:
+            for skill in skills_str.split(','):
+                skill = skill.strip().lower()
+                if skill:
+                    skill_counts[skill] = skill_counts.get(skill, 0) + 1
+    
+    top_skills = sorted(skill_counts.items(), key=lambda x: x[1], reverse=True)[:limit]
+    return [{"skill": k, "count": v} for k, v in top_skills]
+
+@app.get("/hiring-trends")
+def get_hiring_trends(db: Session = Depends(get_db)):
+    # Group by month for hiring trends
+    trends = db.query(
+        func.strftime('%Y-%m', JobListing.posted_at).label('month'),
+        func.count(JobListing.id)
+    ).group_by('month').order_by('month').all()
+    return [{"month": t[0], "count": t[1]} for t in trends]
+
+@app.get("/remote-ratio")
+def get_remote_ratio(db: Session = Depends(get_db)):
+    total = db.query(func.count(JobListing.id)).scalar() or 1
+    remote_count = db.query(func.count(JobListing.id)).filter(JobListing.remote == True).scalar() or 0
+    return {
+        "remote": remote_count,
+        "onsite": total - remote_count,
+        "ratio": round(remote_count / total, 2)
+    }
 
 if __name__ == "__main__":
     port = int(os.getenv("API_PORT", 8000))

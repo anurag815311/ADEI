@@ -125,21 +125,39 @@ if not jobs_df.empty:
             st.info("No trend data available.")
 
     with tab2:
-        if insights and "top_tags" in insights:
-            tags_data = pd.DataFrame(list(insights["top_tags"].items()), columns=["Skill", "Frequency"])
-            fig_tags = px.bar(tags_data, x="Frequency", y="Skill", orientation='h',
-                             title="Most Demanded Tech Skills",
-                             color="Frequency", color_continuous_scale='Blues')
-            st.plotly_chart(fig_tags, use_container_width=True)
-        else:
-            st.info("Skill analysis pending...")
+        # Fetch Top Skills from new endpoint
+        try:
+            # Get slightly more so we can filter and still have 10
+            top_skills_resp = requests.get(f"{API_URL}/top-skills?limit=30").json()
+            if top_skills_resp:
+                skills_data = pd.DataFrame(top_skills_resp)
+                
+                # Data Filtering: Remove skills with count < 2
+                skills_data = skills_data[skills_data['count'] >= 2]
+                
+                # Keep Top 10
+                skills_data = skills_data.head(10)
+                
+                if not skills_data.empty:
+                    # Sort ascending for plotly horizontal bar chart
+                    skills_data = skills_data.sort_values(by='count', ascending=True)
+                    fig_skills = px.bar(skills_data, x="count", y="skill", orientation='h',
+                                     title="Top 10 Technical Skills Demand",
+                                     color="count", color_continuous_scale='Magma')
+                    st.plotly_chart(fig_skills, use_container_width=True)
+                else:
+                    st.info("Not enough skill data to show meaningful trends (requires count >= 2).")
+            else:
+                st.info("Gathering skill intelligence...")
+        except Exception as e:
+            st.error(f"Could not fetch skill analytics: {e}")
 
     with tab3:
         if insights and "top_locations" in insights:
             loc_data = pd.DataFrame(list(insights["top_locations"].items()), columns=["Location", "Jobs"])
-            fig_loc = px.treemap(loc_data, path=['Location'], values='Jobs',
-                                title="Hiring Hubs Distribution",
-                                color='Jobs', color_continuous_scale='Viridis')
+            fig_loc = px.pie(loc_data, values='Jobs', names='Location',
+                                title="Hiring Hotspots (Top 10 Locations)",
+                                hole=0.4)
             st.plotly_chart(fig_loc, use_container_width=True)
         else:
             st.info("Geographical data not found.")
