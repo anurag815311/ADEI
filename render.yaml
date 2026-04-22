@@ -1,19 +1,14 @@
-databases:
-  - name: job-intel-db
-    plan: free
-
 services:
-  # FastAPI Backend
+  # FastAPI Backend (Includes Background Pipeline)
   - type: web
     name: job-intel-api
     env: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: job-intel-db
-          property: connectionString
+        sync: false # Paste your Neon.tech connection string here manually on Render
       - key: API_PORT
         value: 8000
 
@@ -21,24 +16,13 @@ services:
   - type: web
     name: job-intel-dashboard
     env: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0
     envVars:
       - key: API_PORT
         value: 8000
+      - key: API_URL
+        sync: false # Set this to your job-intel-api URL once deployed
       - key: DATABASE_URL
-        fromDatabase:
-          name: job-intel-db
-          property: connectionString
-
-  # Background Pipeline (Cron/Worker)
-  - type: worker
-    name: job-intel-pipeline
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python pipeline/orchestrator.py
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: job-intel-db
-          property: connectionString
+        sync: false # Paste your Neon.tech connection string here manually on Render

@@ -6,8 +6,17 @@ from api.schemas import JobSchema
 from typing import List, Optional
 import uvicorn
 import os
+import threading
+from pipeline.orchestrator import run_job_pipeline
 
 app = FastAPI(title="Job Intelligence API")
+
+@app.on_event("startup")
+def startup_event():
+    # Run the pipeline in a background thread to keep the service free on Render
+    # This avoids the need for a separate paid 'Worker' instance
+    thread = threading.Thread(target=run_job_pipeline, daemon=True)
+    thread.start()
 
 # Dependency
 def get_db():
@@ -98,10 +107,16 @@ def get_top_skills(limit: int = 15, db: Session = Depends(get_db)):
 @app.get("/hiring-trends")
 def get_hiring_trends(db: Session = Depends(get_db)):
     # Group by month for hiring trends
-    trends = db.query(
-        func.strftime('%Y-%m', JobListing.posted_at).label('month'),
-        func.count(JobListing.id)
-    ).group_by('month').order_by('month').all()
+    if SessionLocal().bind.dialect.name == 'sqlite':
+        trends = db.query(
+            func.strftime('%Y-%m', JobListing.posted_at).label('month'),
+            func.count(JobListing.id)
+        ).group_by('month').order_by('month').all()
+    else:
+        trends = db.query(
+            func.to_char(JobListing.posted_at, 'YYYY-MM').label('month'),
+            func.count(JobListing.id)
+        ).group_by('month').order_by('month').all()
     return [{"month": t[0], "count": t[1]} for t in trends]
 
 @app.get("/remote-ratio")
