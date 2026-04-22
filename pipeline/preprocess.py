@@ -101,17 +101,28 @@ class DataPipeline:
         db = SessionLocal()
         count = 0
         try:
+            is_postgres = db.bind.dialect.name == 'postgresql'
             for item in data:
-                stmt = insert(JobListing).values(**item)
-                stmt = stmt.on_conflict_do_update(
-                    index_elements=['external_id'],
-                    set_={
-                        "title": item["title"],
-                        "description": item["description"],
-                        "posted_at": item["posted_at"]
-                    }
-                )
-                db.execute(stmt)
+                if is_postgres:
+                    stmt = insert(JobListing).values(**item)
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['external_id'],
+                        set_={
+                            "title": item["title"],
+                            "description": item["description"],
+                            "posted_at": item["posted_at"],
+                            "skills": item.get("skills", "")
+                        }
+                    )
+                    db.execute(stmt)
+                else:
+                    # SQLite fallback (no native upsert in SQLAlchemy core without specific dialects)
+                    existing = db.query(JobListing).filter(JobListing.external_id == item['external_id']).first()
+                    if existing:
+                        for key, value in item.items():
+                            setattr(existing, key, value)
+                    else:
+                        db.add(JobListing(**item))
                 count += 1
             db.commit()
             logger.info(f"Successfully loaded {count} records to database.")

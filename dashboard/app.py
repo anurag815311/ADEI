@@ -180,7 +180,14 @@ else:
     st.warning("⚠️ No matching data found. Try adjusting filters or search query.")
     if st.button("Run Initial Scrape"):
         st.info("Starting background scraper...")
-        # In a real app, we'd trigger a subprocess or API call here
+        try:
+            res = requests.get(f"{API_URL}/run-scrape")
+            if res.status_code == 200:
+                st.success("Pipeline triggered! Refresh in 1-2 minutes.")
+            else:
+                st.error("Failed to trigger pipeline.")
+        except Exception as e:
+            st.error(f"Error connecting to API: {e}")
 
 st.markdown("---")
 st.markdown(" Data sources: Arbeitnow, Remotive")

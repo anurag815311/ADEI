@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from db.models import JobListing, SessionLocal
+from db.models import JobListing, SessionLocal, init_db
 from api.schemas import JobSchema
 from typing import List, Optional
 import uvicorn
@@ -9,14 +9,31 @@ import os
 import threading
 from pipeline.orchestrator import run_job_pipeline
 
-app = FastAPI(title="Job Intelligence API")
+app = FastAPI(
+    title="Job Intelligence API",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
 
 @app.on_event("startup")
 def startup_event():
+    # Ensure tables are created
+    init_db()
     # Run the pipeline in a background thread to keep the service free on Render
     # This avoids the need for a separate paid 'Worker' instance
     thread = threading.Thread(target=run_job_pipeline, daemon=True)
     thread.start()
+
+@app.get("/")
+def health_check():
+    return {"status": "online", "message": "Job Intelligence API is running"}
+
+@app.get("/run-scrape")
+def trigger_scrape():
+    # Manual trigger for the pipeline
+    thread = threading.Thread(target=run_job_pipeline, daemon=True)
+    thread.start()
+    return {"message": "Scraper triggered successfully in background"}
 
 # Dependency
 def get_db():
