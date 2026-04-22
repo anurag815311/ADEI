@@ -1,0 +1,46 @@
+services:
+  # PostgreSQL Database
+  - type: database
+    name: job-intel-db
+    databaseName: job_intelligence
+    user: postgres
+
+  # FastAPI Backend
+  - type: web
+    name: job-intel-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: job-intel-db
+          property: connectionString
+      - key: API_PORT
+        value: 8000
+
+  # Streamlit Dashboard
+  - type: web
+    name: job-intel-dashboard
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0
+    envVars:
+      - key: API_PORT
+        value: 8000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: job-intel-db
+          property: connectionString
+
+  # Background Pipeline (Cron/Worker)
+  - type: worker
+    name: job-intel-pipeline
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python pipeline/orchestrator.py
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: job-intel-db
+          property: connectionString

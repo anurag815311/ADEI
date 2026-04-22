@@ -1,0 +1,24 @@
+2026-04-22 13:01:51.012 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 1}
+2026-04-22 13:01:52.628 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 2}
+2026-04-22 13:01:54.151 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 3}
+2026-04-22 13:01:55.690 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 4}
+2026-04-22 13:01:57.216 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 5}
+2026-04-22 13:01:59.081 | INFO     | scraping.job_scraper:save_raw:27 - Saved raw data to data/raw\arbeitnow_20260422_130159.json
+2026-04-22 13:01:59.084 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://remotive.com/api/remote-jobs with params None
+2026-04-22 13:01:59.672 | INFO     | scraping.job_scraper:save_raw:27 - Saved raw data to data/raw\remotive_20260422_130159.json
+2026-04-22 13:01:59.672 | INFO     | __main__:run_job_pipeline:23 - Step 2: Processing and Loading...
+2026-04-22 13:02:32.503 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 1}
+2026-04-22 13:02:34.224 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 2}
+2026-04-22 13:02:35.851 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 3}
+2026-04-22 13:02:37.470 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 4}
+2026-04-22 13:02:39.105 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://www.arbeitnow.com/api/job-board-api with params {'page': 5}
+2026-04-22 13:02:40.782 | INFO     | scraping.job_scraper:save_raw:27 - Saved raw data to data/raw\arbeitnow_20260422_130240.json
+2026-04-22 13:02:40.786 | INFO     | scraping.job_scraper:fetch_url:18 - Fetching https://remotive.com/api/remote-jobs with params None
+2026-04-22 13:02:41.418 | INFO     | scraping.job_scraper:save_raw:27 - Saved raw data to data/raw\remotive_20260422_130241.json
+2026-04-22 13:02:41.422 | INFO     | __main__:run_job_pipeline:23 - Step 2: Processing and Loading...
+2026-04-22 13:02:42.883 | INFO     | pipeline.preprocess:load_to_db:89 - Successfully loaded 500 records to database.
+2026-04-22 13:02:44.279 | INFO     | pipeline.preprocess:load_to_db:89 - Successfully loaded 500 records to database.
+2026-04-22 13:02:44.400 | INFO     | pipeline.preprocess:load_to_db:89 - Successfully loaded 19 records to database.
+2026-04-22 13:02:44.682 | INFO     | pipeline.preprocess:load_to_db:89 - Successfully loaded 19 records to database.
+2026-04-22 13:02:44.683 | INFO     | __main__:run_job_pipeline:27 - Pipeline Run Completed Successfully.
+2026-04-22 13:02:44.732 | INFO     | __main__:<module>:37 - Scheduler started. Running every 24 hours.

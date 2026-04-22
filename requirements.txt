@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+streamlit
+pandas
+sqlalchemy
+psycopg2-binary
+requests
+beautifulsoup4
+python-dotenv
+apscheduler
+plotly
+scikit-learn
+joblib
+loguru
+pydantic
+tenacity
+httpx

@@ -1,0 +1,89 @@
+# 🚀 Job Market Intelligence Pipeline (B2B)
+
+A production-grade, end-to-end data engineering project that scrapes, processes, and visualizes job market data (remote and tech jobs) to provide business intelligence.
+
+## 🏗️ Architecture
+
+1.  **Scraper**: Python-based scraper (Requests + Tenacity) for Arbeitnow and Remotive APIs.
+2.  **ETL Pipeline**: Data cleaning (BS4), transformation (Pandas), and normalization.
+3.  **Database**: PostgreSQL for structured storage of job listings.
+4.  **Automation**: APScheduler orchestrating daily runs (Idempotent upserts).
+5.  **Backend API**: FastAPI serving data, insights, and trend endpoints.
+6.  **Frontend**: Streamlit dashboard with interactive Plotly visualizations.
+7.  **ML Layer**: RandomForest model for job demand forecasting.
+
+## 🛠️ Tech Stack
+
+*   **Backend**: FastAPI, SQLAlchemy, PostgreSQL
+*   **Pipeline**: APScheduler, Pandas, BeautifulSoup4
+*   **Frontend**: Streamlit, Plotly
+*   **Deployment**: Docker, Docker Compose
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+*   Docker and Docker Compose installed.
+
+### Setup & Run (One Command)
+
+```bash
+docker-compose up --build
+```
+
+This will start:
+*   **PostgreSQL**: `localhost:5432`
+*   **FastAPI Backend**: `localhost:8000`
+*   **Streamlit Dashboard**: `localhost:8501`
+*   **Pipeline**: Automated background process
+
+## 📊 Features
+
+*   **Real-time Scrapping**: Automatically pulls the latest jobs from multiple sources.
+*   **Data Integrity**: Handles HTML cleaning, deduplication, and schema validation.
+*   **Insights**: Track remote vs. on-site ratios and hiring trends over time.
+*   **Forecasting**: Predicts future job posting volumes using machine learning.
+
+## 📁 Project Structure
+
+```text
+ADEI/
+├── api/             # FastAPI Backend
+├── dashboard/       # Streamlit UI
+├── db/              # Database Models & Session
+├── ml/              # Machine Learning Model & Training
+├── pipeline/        # ETL & Orchestration
+├── scraping/        # API Scrapers
+├── data/            # Raw & Processed Data (Volume mapped)
+├── logs/            # Application Logs
+├── Dockerfile       # Container definition
+└── docker-compose.yml # Service orchestration
+```
+
+## 📝 API Endpoints
+
+*   `GET /data`: List job listings with filters.
+*   `GET /insights`: Market distribution statistics.
+*   `GET /trends`: Daily job posting volume trends.
+
+
+## 🌐 Deployment
+
+### Option 1: Render (Recommended)
+This project is pre-configured for [Render](https://render.com).
+1. Connect your GitHub repository to Render.
+2. Render will automatically detect the `render.yaml` file.
+3. Click **Create New Resources** to spin up the Database, API, Dashboard, and Pipeline.
+
+### Option 2: Docker
+```bash
+docker-compose up --build
+```
+
+### Option 3: Manual Local Run
+1. Install dependencies: `pip install -r requirements.txt`
+2. Run the pipeline: `python -m pipeline.orchestrator`
+3. Start API: `python -m api.main`
+4. Start Dashboard: `streamlit run dashboard/app.py`
+
+---
