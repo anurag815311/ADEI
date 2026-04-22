@@ -20,101 +20,88 @@ st.set_page_config(
 # --- STYLING ---
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* -------- GLOBAL -------- */
-body {
-    font-family: 'Inter', sans-serif;
-}
+    /* -------- GLOBAL -------- */
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
 
-/* -------- MAIN BACKGROUND -------- */
-.main {
-    background-color: #f5f7fb;
-}
+    /* -------- MAIN BACKGROUND -------- */
+    .main {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    }
 
-/* -------- TITLE -------- */
-h1 {
-    font-weight: 700;
-    letter-spacing: -0.5px;
-}
+    /* -------- METRIC CARDS -------- */
+    [data-testid="stMetricValue"] {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+    
+    .stMetric {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        border-radius: 16px;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-/* -------- METRIC CARDS -------- */
-.stMetric {
-    background: #ffffff;
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    transition: all 0.2s ease-in-out;
-}
+    .stMetric:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: #3b82f6;
+    }
 
-.stMetric:hover {
-    transform: translateY(-2px);
-}
+    /* -------- TABS -------- */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 24px;
+        background-color: transparent;
+    }
 
-/* -------- SIDEBAR -------- */
-section[data-testid="stSidebar"] {
-    background-color: #ffffff;
-    border-right: 1px solid #e5e7eb;
-}
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        white-space: pre-wrap;
+        background-color: transparent;
+        border-radius: 0px;
+        color: #64748b;
+        font-weight: 600;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+    }
 
-/* -------- INPUT FIELDS -------- */
-input, textarea {
-    border-radius: 8px !important;
-    border: 1px solid #d1d5db !important;
-}
+    .stTabs [aria-selected="true"] {
+        color: #2563eb !important;
+        border-bottom: 2px solid #2563eb !important;
+    }
 
-/* -------- SELECT BOX -------- */
-div[data-baseweb="select"] {
-    border-radius: 8px;
-}
+    /* -------- BUTTONS -------- */
+    .stButton > button {
+        background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        width: 100%;
+    }
 
-/* -------- RADIO -------- */
-div[role="radiogroup"] > label {
-    padding: 6px 8px;
-    border-radius: 6px;
-}
+    .stButton > button:hover {
+        background: linear-gradient(90deg, #1d4ed8 0%, #1e40af 100%);
+        box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3);
+        transform: translateY(-1px);
+    }
 
-/* -------- BUTTON -------- */
-.stButton > button {
-    background: #2563eb;
-    color: white;
-    border-radius: 8px;
-    padding: 8px 16px;
-    border: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.stButton > button:hover {
-    background: #1d4ed8;
-    transform: scale(1.02);
-}
-
-/* -------- DATAFRAME -------- */
-[data-testid="stDataFrame"] {
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-}
-
-/* -------- TABS -------- */
-button[role="tab"] {
-    font-weight: 500;
-}
-
-button[aria-selected="true"] {
-    border-bottom: 2px solid #2563eb !important;
-}
-
-/* -------- ALERT BOX -------- */
-.stAlert {
-    border-radius: 10px;
-}
-
-/* -------- DIVIDER -------- */
-hr {
-    border: none;
-    border-top: 1px solid #e5e7eb;
-}
+    /* -------- DATAFRAME -------- */
+    [data-testid="stDataFrame"] {
+        padding: 10px;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+    }
 
 </style>
 """, unsafe_allow_html=True)
@@ -131,19 +118,23 @@ def fetch(endpoint, params=None):
         return None
 
 # --- SIDEBAR ---
-st.sidebar.title("🔎 Filters")
-
-search = st.sidebar.text_input("Search Jobs")
-source = st.sidebar.selectbox("Source", ["All", "arbeitnow", "remotive"])
-remote = st.sidebar.radio("Work Type", ["All", "Remote", "On-site"])
-
-if st.sidebar.button("🔄 Refresh"):
-    st.cache_data.clear()
-    st.rerun()
+with st.sidebar:
+    st.image("https://img.icons8.com/fluency/96/artificial-intelligence.png", width=80)
+    st.title("Market Filters")
+    st.markdown("Customize your intelligence view.")
+    
+    search = st.text_input("🔍 Search Keyword", placeholder="e.g. Senior, Python")
+    source = st.selectbox("🌐 Provider", ["All", "arbeitnow", "remotive"])
+    remote = st.radio("🏠 Work Mode", ["All", "Remote", "On-site"], horizontal=True)
+    
+    st.markdown("---")
+    if st.button("🔄 Sync Live Data"):
+        st.cache_data.clear()
+        st.rerun()
 
 # --- MAIN ---
-st.title("🚀 Job Market Intelligence Pro")
-st.caption("Real-time B2B hiring intelligence dashboard")
+st.title("🚀 Tech Hiring Intelligence")
+st.markdown("##### Enterprise B2B Dashboard for Real-time Market Signals")
 
 # --- FETCH DATA ---
 params = {}
@@ -165,37 +156,40 @@ if data:
                 df["company"].str.contains(search, case=False)]
 
     # --- METRICS ---
-    col1, col2, col3, col4 = st.columns(4)
+    m1, m2, m3, m4 = st.columns(4)
 
-    col1.metric("Jobs", len(df))
-    col2.metric("Companies", df["company"].nunique())
-
+    m1.metric("Active Roles", len(df))
+    m2.metric("Key Players", df["company"].nunique())
+    
     remote_pct = (df["remote"].sum() / len(df)) * 100 if len(df) else 0
-    col3.metric("Remote %", f"{remote_pct:.1f}%")
+    m3.metric("Remote Volume", f"{remote_pct:.1f}%")
+    
+    m4.metric("Market Sources", df["source"].nunique())
 
-    col4.metric("Sources", df["source"].nunique())
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    st.divider()
+    # --- ANALYTICS ---
+    st.subheader("📊 Deep Dive Analysis")
+    tab1, tab2, tab3 = st.tabs(["📈 Demand Trends", "🛠 Tech Stack Heatmap", "🌍 Hiring Hubs"])
 
-    # --- TABS ---
-    tab1, tab2, tab3 = st.tabs(["📈 Trends", "🛠 Skills", "🌍 Locations"])
-
-    # --- TRENDS ---
     with tab1:
         trends = fetch("trends")
         if trends:
             tdf = pd.DataFrame(trends)
-            fig = px.area(tdf, x="day", y="count", title="Job Trends")
+            fig = px.area(tdf, x="day", y="count", 
+                         title="Daily Hiring Momentum",
+                         color_discrete_sequence=['#3b82f6'],
+                         template="plotly_white")
+            fig.update_layout(margin=dict(l=0, r=0, t=40, b=0), height=400)
             st.plotly_chart(fig, use_container_width=True)
         else:
-            st.info("No trend data")
+            st.info("Trend analysis pending data accumulation.")
 
-    # --- SKILLS ---
     with tab2:
         skills = fetch("top-skills", {"limit": 30})
         if skills:
             sdf = pd.DataFrame(skills)
-            sdf = sdf[sdf["count"] > 1].head(10)
+            sdf = sdf[sdf["count"] > 1].head(12)
 
             if not sdf.empty:
                 fig = px.bar(
@@ -203,16 +197,18 @@ if data:
                     x="count",
                     y="skill",
                     orientation="h",
-                    title="Top Skills",
-                    color="count"
+                    title="Top Technical Skills in Demand",
+                    color="count",
+                    color_continuous_scale='Blues',
+                    template="plotly_white"
                 )
+                fig.update_layout(margin=dict(l=0, r=0, t=40, b=0), height=450)
                 st.plotly_chart(fig, use_container_width=True)
             else:
-                st.info("Not enough skill data yet")
+                st.info("Insufficient skill signals detected.")
         else:
-            st.info("Skill data unavailable")
+            st.info("Intelligence service busy...")
 
-    # --- LOCATIONS ---
     with tab3:
         insights = fetch("insights")
         if insights and "top_locations" in insights:
@@ -220,27 +216,44 @@ if data:
                 list(insights["top_locations"].items()),
                 columns=["Location", "Jobs"]
             )
-            fig = px.pie(loc_df, values="Jobs", names="Location")
+            fig = px.pie(loc_df, values="Jobs", names="Location",
+                        title="Geographic Talent Centers",
+                        hole=0.6,
+                        color_discrete_sequence=px.colors.qualitative.Pastel)
+            fig.update_layout(margin=dict(l=0, r=0, t=40, b=0), height=450)
             st.plotly_chart(fig, use_container_width=True)
         else:
-            st.info("No location data")
+            st.info("Mapping location hotspots...")
 
-    st.divider()
-
-    # --- TABLE ---
-    st.subheader("📋 Job Listings")
-    st.dataframe(df, use_container_width=True)
+    # --- LISTINGS ---
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.subheader("📋 Intelligence Feed")
+    
+    # Custom Table Configuration
+    st.dataframe(
+        df[["title", "company", "location", "remote", "posted_at", "url"]].sort_values("posted_at", ascending=False),
+        column_config={
+            "title": "Position Title",
+            "company": "Organization",
+            "location": "HQ / Region",
+            "remote": st.column_config.CheckboxColumn("Remote?"),
+            "posted_at": st.column_config.DateColumn("Intelligence Date"),
+            "url": st.column_config.LinkColumn("Deep Link")
+        },
+        use_container_width=True,
+        hide_index=True
+    )
 
 else:
-    st.warning("⚠️ No data found")
+    st.warning("⚠️ No intelligence signals found for current filters.")
 
-    # 🔥 IMPROVED SCRAPE BUTTON
-    if st.button("🚀 Run Initial Scrape"):
-        with st.spinner("Running pipeline..."):
+    if st.button("🚀 Execute Global Market Sync"):
+        with st.spinner("Synchronizing with global job boards..."):
             res = fetch("run-scrape")
             if res:
-                st.success("✅ Pipeline started! Refresh in 20–30 sec")
+                st.success("✅ Sync successful! Feed will update in 30 seconds.")
             else:
-                st.error("❌ Failed to trigger pipeline")
+                st.error("❌ Synchronization interrupted.")
 
-st.caption("Sources: Arbeitnow • Remotive")
+st.divider()
+st.caption("Powered by Tech Hiring Intelligence Engine • Sources: Arbeitnow, Remotive")
