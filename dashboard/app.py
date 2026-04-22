@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_URL = f"http://localhost:{os.getenv('API_PORT', 8000)}"
+API_URL = os.getenv('API_URL', f"http://localhost:{os.getenv('API_PORT', 8000)}")
 
 # --- UI Configuration ---
 st.set_page_config(
