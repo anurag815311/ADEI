@@ -31,9 +31,12 @@ def health_check():
 @app.get("/run-scrape")
 def trigger_scrape():
     # Manual trigger for the pipeline
-    thread = threading.Thread(target=run_job_pipeline, daemon=True)
-    thread.start()
-    return {"message": "Scraper triggered successfully in background"}
+    try:
+        thread = threading.Thread(target=run_job_pipeline, daemon=True)
+        thread.start()
+        return {"status": "success", "message": "Scraper triggered successfully in background"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 # Dependency
 def get_db():

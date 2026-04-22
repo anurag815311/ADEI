@@ -249,11 +249,21 @@ else:
 
     if st.button("🚀 Execute Global Market Sync"):
         with st.spinner("Synchronizing with global job boards..."):
-            res = fetch("run-scrape")
-            if res:
-                st.success("✅ Sync successful! Feed will update in 30 seconds.")
-            else:
-                st.error("❌ Synchronization interrupted.")
+            try:
+                # IMPORTANT: We use requests.get directly here because this is an ACTION, not a fetch.
+                # We do NOT want to cache this call.
+                res = requests.get(f"{API_URL}/run-scrape", timeout=15)
+                if res.status_code == 200:
+                    data = res.json()
+                    if data.get("status") == "success":
+                        st.success(f"✅ {data.get('message', 'Sync successful!')}")
+                        st.info("The feed will update automatically in about 30-60 seconds.")
+                    else:
+                        st.error(f"❌ Server reported an error: {data.get('message')}")
+                else:
+                    st.error(f"❌ Failed to reach API (Status: {res.status_code})")
+            except Exception as e:
+                st.error(f"❌ Synchronization interrupted: {str(e)}")
 
 st.divider()
 st.caption("Powered by Tech Hiring Intelligence Engine • Sources: Arbeitnow, Remotive")
